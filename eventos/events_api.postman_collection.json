@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "501b373a-0962-408f-86ec-7115dcb799ee",
+		"name": "events_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34296921"
+	},
+	"item": [
+		{
+			"name": "list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/events?page=2",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response  = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"id_event\", response.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\":\"Conferencia\",\r\n    \"fecha\": \"2024-06-08\",\r\n    \"capacidad\": 150,\r\n    \"ubicacion\": \"Teatro\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/events",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "event_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/events/{{id_event}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events",
+						"{{id_event}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\":\"Conferencia\",\r\n    \"fecha\": \"2024-05-22\",\r\n    \"capacidad\": 50,\r\n    \"ubicacion\": \"Teatro\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/events/{{id_event}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events",
+						"{{id_event}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/events/{{id_event}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events",
+						"{{id_event}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:8080/api/v1"
+		},
+		{
+			"key": "URL",
+			"value": ""
+		},
+		{
+			"key": "id_event",
+			"value": ""
+		}
+	]
+}
