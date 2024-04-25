@@ -1,5 +1,6 @@
 package com.riwi.eventos.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -48,11 +49,17 @@ public class EventoService implements IEventoService {
 
     @Override
     public Evento save(Evento objEvento) {
+        if (objEvento.getFecha().isBefore(LocalDate.now()) || objEvento.getCapacidad() < 0) {
+            return null;
+        }
         return this.objEventoRepository.save(objEvento);
     }
 
     @Override
     public Evento update(Evento objEvento) {
+        if (objEvento.getFecha().isBefore(LocalDate.now()) || objEvento.getCapacidad() < 0) {
+            return null;
+        }
         return this.objEventoRepository.save(objEvento);
     }
     

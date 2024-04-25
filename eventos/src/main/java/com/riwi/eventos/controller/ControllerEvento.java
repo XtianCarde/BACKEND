@@ -1,6 +1,5 @@
 package com.riwi.eventos.controller;
 
-import java.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +38,12 @@ public class ControllerEvento {
 
     @PostMapping
     public ResponseEntity<Evento> create(@RequestBody Evento objEvento){
-        if (objEvento.getFecha().isBefore(LocalDate.now()) || objEvento.getCapacidad() < 0) {
-            return null;
-        }
         return ResponseEntity.ok(this.objIEventoService.save(objEvento));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Evento> update(@RequestBody Evento objEvento, @PathVariable String id){
         objEvento.setId(id);
-        if (objEvento.getFecha().isBefore(LocalDate.now()) || objEvento.getCapacidad() < 0) {
-            return null;
-        }
         return ResponseEntity.ok(this.objIEventoService.update(objEvento));
     }
 
