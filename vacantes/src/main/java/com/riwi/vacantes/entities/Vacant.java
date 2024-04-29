@@ -1,6 +1,6 @@
 package com.riwi.vacantes.entities;
 
-import com.riwi.vacantes.utils.Status;
+import com.riwi.vacantes.utils.enums.Status;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
