@@ -2,13 +2,11 @@ package com.riwi.vacantes.services;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import com.riwi.vacantes.entities.Company;
 import com.riwi.vacantes.entities.Vacant;
 import com.riwi.vacantes.repositories.CompanyRepository;
@@ -16,7 +14,7 @@ import com.riwi.vacantes.services.interfaces.ICompanyService;
 import com.riwi.vacantes.utils.dto.request.CompanyRequest;
 import com.riwi.vacantes.utils.dto.response.CompanyResponse;
 import com.riwi.vacantes.utils.dto.response.VacantToCompanyResponse;
-
+import com.riwi.vacantes.utils.exceptions.IdNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -34,8 +32,8 @@ public class CompanyServices implements ICompanyService {
 
     @Override
     public void delete(String id) {
-        // TODO Auto-generated method stub
-        
+       Company objCompany = this.find(id);
+       this.objCompanyRepository.delete(objCompany);
     }
 
     @Override
@@ -52,13 +50,14 @@ public class CompanyServices implements ICompanyService {
     }
 
     private Company find(String id){
-        return this.objCompanyRepository.findById(id).orElseThrow();
+        return this.objCompanyRepository.findById(id).orElseThrow(() -> new IdNotFoundException("Company"));
     }
 
     @Override
     public CompanyResponse update(String id, CompanyRequest rq) {
-        // TODO Auto-generated method stub
-        return null;
+        Company company = this.find(id);
+        Company companyUpdate = this.requestToCompany(rq, company);
+        return this.entityToResponse(this.objCompanyRepository.save(companyUpdate));
     }
     
     private CompanyResponse entityToResponse(Company entity){

@@ -16,5 +16,5 @@ public class VacantResponse {
     private String description;
     private Status status_vacant;
     private String title;
-    private CompanyResponse company;
+    private CompanyToVacantResponse company;
 }
