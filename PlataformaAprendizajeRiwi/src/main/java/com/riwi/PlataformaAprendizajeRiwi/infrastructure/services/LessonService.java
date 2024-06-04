@@ -1,14 +1,18 @@
 package com.riwi.PlataformaAprendizajeRiwi.infrastructure.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.LessonRequest;
-import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CourseBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.AssignmentBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.AssignmentsOfLesson;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonBasicResp;
-import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.UserBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Assignment;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Course;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Lesson;
 import com.riwi.PlataformaAprendizajeRiwi.domain.repositories.CourseRepository;
@@ -56,11 +60,29 @@ public class LessonService implements ILessonService {
     @Override
     public Page<LessonBasicResp> getAll(int page, int size) {
         if(page < 0) page = 0;
-
+        
         PageRequest pagination = PageRequest.of(page, size);
-
+        
         return this.lessonRepository.findAll(pagination)
-                        .map(this::entityToBasciResp);
+        .map(this::entityToBasciResp);
+    }
+
+    @Override
+    public AssignmentsOfLesson getAssignmentsOfLesson(Long id) {
+        Lesson entity = this.find(id);
+
+        List<AssignmentBasicResp> assignments = entity.getAssignments()
+                        .stream()
+                        .map(this::assignmentToResponse)
+                        .collect(Collectors.toList());
+        
+        return AssignmentsOfLesson.builder()
+                    .lessonId(entity.getLessonId())
+                    .lessonTitle(entity.getLessonTitle())
+                    .content(entity.getContent())
+                    .assignments(assignments)
+                    .build();
+
     }
     
     private Lesson requestToEntity(LessonRequest request){
@@ -72,13 +94,6 @@ public class LessonService implements ILessonService {
     }
 
     private LessonBasicResp entityToBasciResp(Lesson entity){
-        
-        UserBasicResp user = UserBasicResp.builder()
-                        .userId(entity.getCourse().getInstructor().getUserId())
-                        .email(entity.getCourse().getInstructor().getEmail())
-                        .fullName(entity.getCourse().getInstructor().getFullName())
-                        .role(entity.getCourse().getInstructor().getRole())
-                        .build();
 
         return LessonBasicResp.builder()
                         .lessonId(entity.getLessonId())
@@ -86,6 +101,15 @@ public class LessonService implements ILessonService {
                         .content(entity.getContent())
                         .build();
 
+    }
+
+    private AssignmentBasicResp assignmentToResponse(Assignment entity){
+        return AssignmentBasicResp.builder()
+                        .assignmentId(entity.getAssignmentId())
+                        .assignmentTitle(entity.getAssignmentTitle())
+                        .description(entity.getDescription())
+                        .dueDate(entity.getDueDate())
+                        .build();
     }
 
 
@@ -98,4 +122,5 @@ public class LessonService implements ILessonService {
         return this.courseRepository.findById(id)
                                 .orElseThrow(() -> new BadRequestException("No hay cursos por el id suministrado"));
     }
+
 }

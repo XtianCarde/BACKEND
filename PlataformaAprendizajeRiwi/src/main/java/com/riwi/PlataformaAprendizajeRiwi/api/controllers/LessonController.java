@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.LessonRequest;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.AssignmentsOfLesson;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.infrastructure.abtract_services.ILessonService;
 
@@ -36,6 +37,11 @@ public class LessonController {
      @GetMapping(path = "/{id}")
      public ResponseEntity<LessonBasicResp> getById(@PathVariable Long id){
         return ResponseEntity.ok(this.lessonService.get(id));
+     }
+
+     @GetMapping(path = "/{id}/assignments")
+     public ResponseEntity<AssignmentsOfLesson> getAssignmentOfLesson(@PathVariable Long id){
+         return ResponseEntity.ok(this.lessonService.getAssignmentsOfLesson(id));
      }
 
      @PostMapping

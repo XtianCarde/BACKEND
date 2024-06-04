@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.UserRequest;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CoursesOfUser;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.UserBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.infrastructure.abtract_services.IUserService;
 
@@ -27,10 +28,15 @@ public class UserController {
     @Autowired
     private final IUserService userService;
 
-    @GetMapping
+    /* @GetMapping
     public ResponseEntity<Page<UserBasicResp>> getAll(@RequestParam(defaultValue = "1") int page,
      @RequestParam(defaultValue = "10") int size){
         return ResponseEntity.ok(this.userService.getAll(page - 1, size));
+     } */
+
+     @GetMapping(path = "/{id}/courses")
+     public ResponseEntity<CoursesOfUser> getCourseOfUser(@PathVariable Long id){
+         return ResponseEntity.ok(this.userService.getCoursesOfUser(id));
      }
 
      @GetMapping(path = "/{id}")

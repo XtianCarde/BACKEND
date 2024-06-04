@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.CourseRequest;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CourseBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonsOfCourse;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.UsersInCourse;
 import com.riwi.PlataformaAprendizajeRiwi.infrastructure.abtract_services.ICourseService;
 
 import lombok.AllArgsConstructor;
@@ -42,6 +43,11 @@ public class CourseController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<CourseBasicResp> getById(@PathVariable Long id){
         return ResponseEntity.ok(this.courseService.get(id));
+    }
+
+    @GetMapping(path = "/{id}/users")
+    public ResponseEntity<UsersInCourse> getUsersInCourse(@PathVariable Long id){
+        return ResponseEntity.ok(this.courseService.getUsersInCourse(id));
     }
 
     @PostMapping

@@ -27,11 +27,11 @@ public class AssignmentController {
     @Autowired
     private final IAssignmentService assignmentService;
 
-    @GetMapping
+    /* @GetMapping
     public ResponseEntity<Page<AssignmentBasicResp>> getAll(@RequestParam (defaultValue = "1") int page,
     @RequestParam (defaultValue = "10") int size){
         return ResponseEntity.ok(this.assignmentService.getAll(page - 1, size));
-    }
+    } */
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<AssignmentBasicResp> getById(@PathVariable Long id){
