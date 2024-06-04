@@ -14,5 +14,4 @@ public class LessonBasicResp {
     private Long lessonId;
     private String lessonTitle;
     private String content;
-    private CourseBasicResp course;
 }

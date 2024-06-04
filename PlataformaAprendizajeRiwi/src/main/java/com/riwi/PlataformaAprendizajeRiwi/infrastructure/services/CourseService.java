@@ -80,10 +80,18 @@ public class CourseService implements ICourseService {
                         .map(this::entityToLessonBasciResp)
                         .collect(Collectors.toList());
 
+        UserBasicResp instructor = UserBasicResp.builder()
+                        .userId(entity.getInstructor().getUserId())
+                        .email(entity.getInstructor().getEmail())
+                        .fullName(entity.getInstructor().getFullName())
+                        .role(entity.getInstructor().getRole())
+                        .build();
+
         return LessonsOfCourse.builder()
                     .courseId(entity.getCourseId())
                     .courseName(entity.getCourseName())
                     .description(entity.getDescription())
+                    .userInstructor(instructor)
                     .lessons(lessons)
                     .build();
     }
@@ -122,18 +130,10 @@ public class CourseService implements ICourseService {
                         .role(entity.getCourse().getInstructor().getRole())
                         .build();
 
-        CourseBasicResp course = CourseBasicResp.builder()
-                        .courseId(entity.getCourse().getCourseId())
-                        .courseName(entity.getCourse().getCourseName())
-                        .description(entity.getCourse().getDescription())
-                        .userInstructor(user)
-                        .build();
-
         return LessonBasicResp.builder()
                         .lessonId(entity.getLessonId())
                         .lessonTitle(entity.getLessonTitle())
                         .content(entity.getContent())
-                        .course(course)
                         .build();
 
     }

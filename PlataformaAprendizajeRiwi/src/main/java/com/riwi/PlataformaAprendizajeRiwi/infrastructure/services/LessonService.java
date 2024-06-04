@@ -80,18 +80,10 @@ public class LessonService implements ILessonService {
                         .role(entity.getCourse().getInstructor().getRole())
                         .build();
 
-        CourseBasicResp course = CourseBasicResp.builder()
-                        .courseId(entity.getCourse().getCourseId())
-                        .courseName(entity.getCourse().getCourseName())
-                        .description(entity.getCourse().getDescription())
-                        .userInstructor(user)
-                        .build();
-
         return LessonBasicResp.builder()
                         .lessonId(entity.getLessonId())
                         .lessonTitle(entity.getLessonTitle())
                         .content(entity.getContent())
-                        .course(course)
                         .build();
 
     }
