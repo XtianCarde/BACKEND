@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.CourseRequest;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CourseBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonsOfCourse;
 import com.riwi.PlataformaAprendizajeRiwi.infrastructure.abtract_services.ICourseService;
 
 import lombok.AllArgsConstructor;
@@ -27,10 +28,15 @@ public class CourseController {
     @Autowired
     private final ICourseService courseService;
 
+    @GetMapping
+    public ResponseEntity<Page<CourseBasicResp>> getAllCourses(@RequestParam (defaultValue = "1") int page,
+    @RequestParam (defaultValue = "1") int size){
+         return ResponseEntity.ok(this.courseService.getAll(page - 1, size));
+    }
+
     @GetMapping(path = "/{id}/lessons")
-    public ResponseEntity<Page<CourseBasicResp>> getAll(@RequestParam (defaultValue = "1") int page,
-    @RequestParam (defaultValue = "10") int size, @PathVariable Long id){
-        return ResponseEntity.ok(this.courseService.getAll(page - 1, size));
+    public ResponseEntity<LessonsOfCourse> getAll(@PathVariable Long id){
+        return ResponseEntity.ok(this.courseService.getlessonsByCourseId(id));
     }
 
     @GetMapping(path = "/{id}")

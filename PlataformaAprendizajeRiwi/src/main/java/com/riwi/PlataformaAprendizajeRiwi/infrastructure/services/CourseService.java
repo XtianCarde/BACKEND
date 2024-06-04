@@ -1,5 +1,8 @@
 package com.riwi.PlataformaAprendizajeRiwi.infrastructure.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.CourseRequest;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CourseBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonsOfCourse;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.UserBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Course;
+import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Lesson;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.User;
 import com.riwi.PlataformaAprendizajeRiwi.domain.repositories.CourseRepository;
 import com.riwi.PlataformaAprendizajeRiwi.domain.repositories.UserRepository;
@@ -67,6 +73,21 @@ public class CourseService implements ICourseService {
                             .map(this::entityToResponse);
     }
  
+    public LessonsOfCourse getlessonsByCourseId(Long courseId){
+        Course entity = this.find(courseId);
+        List<LessonBasicResp> lessons = entity.getLessons()
+                        .stream()
+                        .map(this::entityToLessonBasciResp)
+                        .collect(Collectors.toList());
+
+        return LessonsOfCourse.builder()
+                    .courseId(entity.getCourseId())
+                    .courseName(entity.getCourseName())
+                    .description(entity.getDescription())
+                    .lessons(lessons)
+                    .build();
+    }
+
     private Course requestToEntity(CourseRequest request){
         return Course.builder()
                     .courseName(request.getCourseName())
@@ -90,6 +111,31 @@ public class CourseService implements ICourseService {
                     .description(entity.getDescription())
                     .userInstructor(instructor)
                     .build();
+    }
+
+    private LessonBasicResp entityToLessonBasciResp(Lesson entity){
+        
+        UserBasicResp user = UserBasicResp.builder()
+                        .userId(entity.getCourse().getInstructor().getUserId())
+                        .email(entity.getCourse().getInstructor().getEmail())
+                        .fullName(entity.getCourse().getInstructor().getFullName())
+                        .role(entity.getCourse().getInstructor().getRole())
+                        .build();
+
+        CourseBasicResp course = CourseBasicResp.builder()
+                        .courseId(entity.getCourse().getCourseId())
+                        .courseName(entity.getCourse().getCourseName())
+                        .description(entity.getCourse().getDescription())
+                        .userInstructor(user)
+                        .build();
+
+        return LessonBasicResp.builder()
+                        .lessonId(entity.getLessonId())
+                        .lessonTitle(entity.getLessonTitle())
+                        .content(entity.getContent())
+                        .course(course)
+                        .build();
+
     }
 
     private Course find(Long id){
