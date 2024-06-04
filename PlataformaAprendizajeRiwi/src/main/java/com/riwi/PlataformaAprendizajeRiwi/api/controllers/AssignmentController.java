@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.AssignmentRequest;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.AssignmentBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.SubmissionsOfAssignment;
 import com.riwi.PlataformaAprendizajeRiwi.infrastructure.abtract_services.IAssignmentService;
 
 import lombok.AllArgsConstructor;
@@ -27,15 +28,20 @@ public class AssignmentController {
     @Autowired
     private final IAssignmentService assignmentService;
 
-    /* @GetMapping
+    @GetMapping
     public ResponseEntity<Page<AssignmentBasicResp>> getAll(@RequestParam (defaultValue = "1") int page,
     @RequestParam (defaultValue = "10") int size){
         return ResponseEntity.ok(this.assignmentService.getAll(page - 1, size));
-    } */
+    }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<AssignmentBasicResp> getById(@PathVariable Long id){
         return ResponseEntity.ok(this.assignmentService.get(id));
+    }
+
+    @GetMapping(path = "/{id}/submissions")
+    public ResponseEntity<SubmissionsOfAssignment> getSubmissionsOfAssignment(@PathVariable Long id){
+         return ResponseEntity.ok(this.assignmentService.getSubmissionsOfAssignment(id));
     }
 
     @PostMapping

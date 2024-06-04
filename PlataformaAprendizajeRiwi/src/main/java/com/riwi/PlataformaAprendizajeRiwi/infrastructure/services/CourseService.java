@@ -11,11 +11,14 @@ import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CourseBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.EnrollmentBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.LessonsOfCourse;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.MessageBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.MessagesOfCourse;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.UserBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.UsersInCourse;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Course;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Enrollment;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Lesson;
+import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Message;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.User;
 import com.riwi.PlataformaAprendizajeRiwi.domain.repositories.CourseRepository;
 import com.riwi.PlataformaAprendizajeRiwi.domain.repositories.UserRepository;
@@ -157,30 +160,74 @@ public class CourseService implements ICourseService {
                         .role(entity.getStudent().getRole())
                         .build();
 
-        
-        UserBasicResp instructor = UserBasicResp.builder()
+                        
+                        UserBasicResp instructor = UserBasicResp.builder()
                         .userId(entity.getCourse().getInstructor().getUserId())
                         .email(entity.getCourse().getInstructor().getEmail())
                         .fullName(entity.getCourse().getInstructor().getFullName())
                         .role(entity.getCourse().getInstructor().getRole())
                         .build();
-
-        CourseBasicResp course = CourseBasicResp.builder()
+                        
+                        CourseBasicResp course = CourseBasicResp.builder()
                         .courseId(entity.getCourse().getCourseId())
                         .courseName(entity.getCourse().getCourseName())
                         .description(entity.getCourse().getDescription())
                         .userInstructor(instructor)
                         .build();
+                        
+                        
+                        return EnrollmentBasicResp.builder()
+                        .enrollmentId(entity.getEnrollmentId())
+                        .student(student)
+                        .course(course)
+                        .build();
+                    }
+                    
+                    
+                    
+    @Override
+    public MessagesOfCourse getMessagesOfCourse(Long id) {
+        Course entity = this.find(id);
 
+        List<MessageBasicResp> messages = entity.getMessages()
+                            .stream()
+                            .map(this::messageToBasicResp)
+                            .collect(Collectors.toList());
 
-        return EnrollmentBasicResp.builder()
-                    .enrollmentId(entity.getEnrollmentId())
-                    .student(student)
-                    .course(course)
+        return MessagesOfCourse.builder()
+                    .courseId(entity.getCourseId())
+                    .courseName(entity.getCourseName())
+                    .description(entity.getDescription())
+                    .messages(messages)
                     .build();
     }
 
-    
+    private MessageBasicResp messageToBasicResp(Message entity){
+
+
+        UserBasicResp userSender =  UserBasicResp.builder()
+                    .email( entity.getUserSender().getEmail())
+                    .fullName(entity.getUserSender().getFullName())
+                    .build();
+
+        UserBasicResp userReceiver =  UserBasicResp.builder()
+                    .email( entity.getUserSender().getEmail())
+                    .fullName(entity.getUserSender().getFullName())
+                    .build();
+
+        CourseBasicResp course = CourseBasicResp.builder()
+                    .courseName(entity.getCourse().getCourseName())
+                    .description(entity.getCourse().getDescription())
+                    .build();
+
+        return MessageBasicResp.builder()
+                    .messageId(entity.getMessageId())
+                    .userSender(userSender)
+                    .userReceiver(userReceiver)
+                    .course(course)
+                    .build();
+                    
+    }
 
     private Course find(Long id){
         return this.courseRepository.findById(id)
@@ -191,5 +238,6 @@ public class CourseService implements ICourseService {
         return this.userRepository.findById(id)
                                 .orElseThrow(() -> new BadRequestException("No hay usuarios con el id suministrado"));
     }
+
 
 }

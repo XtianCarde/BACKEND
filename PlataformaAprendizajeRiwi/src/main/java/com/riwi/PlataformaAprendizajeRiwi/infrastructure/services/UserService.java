@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.request.UserRequest;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CourseBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.CoursesOfUser;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.SubmissionBasicResp;
+import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.SubmissionsOfUser;
 import com.riwi.PlataformaAprendizajeRiwi.api.dto.response.UserBasicResp;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Course;
+import com.riwi.PlataformaAprendizajeRiwi.domain.entities.Submission;
 import com.riwi.PlataformaAprendizajeRiwi.domain.entities.User;
 import com.riwi.PlataformaAprendizajeRiwi.domain.repositories.UserRepository;
 import com.riwi.PlataformaAprendizajeRiwi.infrastructure.abtract_services.IUserService;
@@ -78,6 +81,24 @@ public class UserService implements IUserService {
                 .build();
     }
 
+    @Override
+    public SubmissionsOfUser getSubmissionsOfUser(Long id) {
+        User entity = this.find(id);
+
+        List<SubmissionBasicResp> submissions = entity.getSubmissions()
+                .stream()
+                .map(this::submissionsToResponse)
+                .collect(Collectors.toList());
+
+        return SubmissionsOfUser.builder()
+                    .userId(entity.getUserId())
+                    .fullName(entity.getFullName())
+                    .email(entity.getEmail())
+                    .role(entity.getRole())
+                    .submissions(submissions)
+                    .build();
+    }
+
     private User requestToEntity(UserRequest userRequest){
 
         return User.builder()
@@ -97,7 +118,7 @@ public class UserService implements IUserService {
         .role(user.getRole())
         .build();
     }
-
+    
     private CourseBasicResp CourseToResponse(Course entity){
 
         UserBasicResp instructor = UserBasicResp.builder()
@@ -115,10 +136,20 @@ public class UserService implements IUserService {
                     .build();
     }
 
+    private SubmissionBasicResp submissionsToResponse(Submission entity){
+        return SubmissionBasicResp.builder()
+                    .submissionId(entity.getSubmissionId())
+                    .content(entity.getContent())
+                    .grade(entity.getGrade())
+                    .submissionDate(entity.getSubmissionDate())
+                    .build();
+    }
+
     private User find(Long id){
         return this.userRepository.findById(id)
                                 .orElseThrow(() -> new BadRequestException("No hay usuarios con el id suministrado"));
     }
+
 
 
 }
